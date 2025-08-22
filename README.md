@@ -16,10 +16,10 @@ Este projeto automatiza a criação de uma faixa de áudio de dublagem a partir 
 
 Este projeto só é possível graças ao trabalho incrível de desenvolvedores de código aberto. Faço questão de dar o devido crédito às ferramentas essenciais utilizadas:
 
--   **[Kokoro-TTS](https://github.com/tonysong-dev/kokoro-tts):** O coração deste projeto. Um motor TTS fantástico baseado em PyTorch, criado por [Tony Song](https://github.com/tonysong-dev).
--   **[Pydub](https://github.com/jiaaro/pydub):** Uma biblioteca essencial e poderosa para a manipulação de áudio em Python.
--   **[webvtt-py](https://pypi.org/project/webvtt-py/):** Uma biblioteca robusta para a análise de arquivos de legenda WebVTT.
--   **[FFmpeg](https://ffmpeg.org/):** A ferramenta fundamental que serve de backend para `pydub` e para toda a manipulação de mídia.
+-   **[Kokoro-TTS]** O coração deste projeto. Um motor TTS fantástico baseado em PyTorch.
+-   **[Pydub]** Uma biblioteca essencial e poderosa para a manipulação de áudio em Python.
+-   **[webvtt-py]** Uma biblioteca robusta para a análise de arquivos de legenda WebVTT.
+-   **[FFmpeg]** A ferramenta fundamental que serve de backend para `pydub` e para toda a manipulação de mídia.
 
 ---
 
