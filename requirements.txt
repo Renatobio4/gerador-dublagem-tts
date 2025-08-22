@@ -1,0 +1,11 @@
+# Dependências do motor de TTS Kokoro (baseado em PyTorch)
+kokoro
+torch
+soundfile
+numpy
+
+# Biblioteca para análise de arquivos de legenda VTT
+webvtt-py
+
+# Biblioteca para manipulação de áudio (silêncio, aceleração, exportação para MP3)
+pydub
