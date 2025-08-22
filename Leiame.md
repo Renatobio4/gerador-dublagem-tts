@@ -45,11 +45,7 @@ Siga os passos abaixo para configurar o ambiente e executar o projeto.
 
 ### 2. Configuração do Projeto
 1.  **Clone este repositório:**
-    ```bash
-    git clone https://github.com/SEU-USUARIO/NOME-DO-SEU-REPOSITORIO.git
-    cd NOME-DO-SEU-REPOSITORIO
-    ```
-    *(Substitua `SEU-USUARIO` e `NOME-DO-SEU-REPOSITORIO` pelos seus dados)*
+
 
 2.  **Crie e ative um ambiente virtual:**
     ```bash
