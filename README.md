@@ -1,8 +1,8 @@
+[English Version](README.en.md)
+
 # Gerador de Dublagem Automática com Legendas e TTS
 
 Este projeto automatiza a criação de uma faixa de áudio de dublagem a partir de um arquivo de legenda (`.vtt`). Utilizando o motor de Text-to-Speech (TTS) **Kokoro**, o script gera uma narração sincronizada que respeita os tempos e pausas da legenda original, tornando-o ideal para dublar vídeos educacionais, tutoriais e outros conteúdos.
-
-O projeto inclui ferramentas tanto para processar um único arquivo quanto para automatizar a dublagem de uma pasta inteira de vídeos.
 
 ## Funcionalidades Principais
 
@@ -10,8 +10,7 @@ O projeto inclui ferramentas tanto para processar um único arquivo quanto para 
 -   **Aceleração Dinâmica:** Se uma fala é muito longa para o tempo alocado na legenda, o script acelera o clipe de áudio de forma inteligente para que ele se encaixe perfeitamente.
 -   **Motor TTS Offline de Alta Qualidade:** Utiliza o **Kokoro (PyTorch)**, que oferece vozes com som natural sem depender de serviços online.
 -   **Processamento em Lote:** Inclui um script para processar automaticamente uma pasta inteira de vídeos e legendas.
--   **Flexibilidade:** Permite a escolha de diferentes vozes e idiomas através de argumentos de linha de comando.
--   **Robusto:** Lida com arquivos VTT comuns que não possuem o cabeçalho `WEBVTT` obrigatório e possui busca flexível por legendas.
+-   **Suporte a Múltiplos Idiomas (via Kokoro-TTS):** Permite gerar áudio em diferentes idiomas, desde que o texto da legenda já esteja no idioma desejado.
 
 ---
 
@@ -34,25 +33,17 @@ Siga os passos abaixo para configurar o ambiente e executar o projeto.
 -   **Python 3.8+**
 -   **Git**
 -   **FFmpeg:** Essencial para a manipulação de áudio.
-
-    -   **No Linux (Ubuntu/Debian/Mint):**
-        ```bash
-        sudo apt-get update && sudo apt-get install ffmpeg
-        ```
-    -   **No macOS (usando [Homebrew]):**
-        ```bash
-        brew install ffmpeg
-        ```
-    -   **No Windows:**
-        Recomenda-se instalar via [Chocolatey] (`choco install ffmpeg`) ou baixar o executável do site oficial e adicionar ao PATH do sistema.
+    -   **No Linux (Ubuntu/Debian/Mint):** `sudo apt-get update && sudo apt-get install ffmpeg`
+    -   **No macOS (usando [Homebrew](https://brew.sh/)):** `brew install ffmpeg`
+    -   **No Windows:** Recomenda-se instalar via [Chocolatey].
 
 ### 2. Configuração do Projeto
-1.  **Clone este repositório:**
+1.  **Clone o repositório:**
     ```bash
-    git clone https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
-    cd SEU-REPOSITORIO
+    git clone https://github.com/Renatobio4/gerador-dublagem-tts.git
+    cd gerador-dublagem-tts
     ```
-    *(Substitua `SEU-USUARIO` e `SEU-REPOSITORIO` pelo seu nome de usuário e nome do repositório no GitHub)*
+    *(Desenvolvedores que desejam contribuir devem primeiro criar um [Fork](https://docs.github.com/pt/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks) do projeto).*
 
 2.  **Crie e ative um ambiente virtual:**
     ```bash
@@ -67,83 +58,58 @@ Siga os passos abaixo para configurar o ambiente e executar o projeto.
     ```
 
 3.  **Instale as dependências Python:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+    Abaixo estão duas opções. **`uv` é a recomendada por ser mais rápida e moderna.**
+
+    -   **Opção A (Recomendado): Usando `uv`**
+        `uv` é um instalador de pacotes extremamente rápido, compatível com `pip`.
+        ```bash
+        # Instale o uv (só precisa fazer uma vez)
+        pip install uv
+
+        # Use o uv para instalar as dependências
+        uv pip install -r requirements.txt
+        ```
+
+    -   **Opção B: Usando `pip` padrão**
+        ```bash
+        pip install -r requirements.txt
+        ```
 
 ---
 
 ## Como Usar
 
-O projeto oferece dois modos de uso: processar um único arquivo ou processar uma pasta inteira em lote.
+> **Nota Importante:** Este script **não traduz** o texto. Ele sintetiza o texto *existente* na legenda em áudio. A legenda de entrada já deve estar no idioma da dublagem desejada.
+
+O projeto oferece dois modos de uso: processar um único arquivo ou uma pasta inteira.
 
 ### Modo 1: Processar um Único Arquivo (`gerador_de_dublagem.py`)
 
-Use este script quando quiser dublar apenas um vídeo ou gerar apenas o arquivo de áudio.
-
-**Exemplo 1: Gerar o vídeo final com dublagem (recomendado)**
-Este comando cria o áudio e o adiciona diretamente ao vídeo em uma única etapa.
+**Uso:** `python3 gerador_de_dublagem.py [LEGENDA_ENTRADA] [ARQUIVO_SAIDA] --video_entrada [VIDEO_ENTRADA]`
 
 ```bash
+# Exemplo completo: gera o áudio e adiciona ao vídeo
 python3 gerador_de_dublagem.py "legenda.vtt" "video_final.mp4" --video_entrada "video_original.mp4"
-```
-
-**Exemplo 2: Gerar apenas o arquivo de áudio (`.mp3`)**
-```bash
-python3 gerador_de_dublagem.py "legenda.vtt" "audio_dublado.mp3"
 ```
 
 ### Modo 2: Processar Vários Vídeos em Lote (`processar_lote.py`)
 
-Use este script para automatizar a dublagem de uma pasta inteira. Ele procura por pares de arquivos de vídeo e legenda e processa todos eles.
+**Uso:** `python3 processar_lote.py [PASTA_DE_VIDEOS]`
 
-**Organização dos arquivos:**
-O script é flexível. Para cada arquivo `video.mp4`, ele procurará por um arquivo `.vtt` que **comece com o mesmo nome**.
-
-Exemplo de estrutura de pasta válida:
-```
-minha_pasta_de_videos/
-├── aula01.mp4
-├── aula01 Portuguese.vtt
-├── aula02.mp4
-├── aula02.vtt
-├── introducao.mp4
-└── introducao - Legenda PTBR.vtt
-```
-
-**Exemplo de comando:**
 ```bash
-python3 processar_lote.py "caminho/para/minha_pasta_de_videos"
-```
-O script irá criar os arquivos `aula01_dublado.mp4`, `aula02_dublado.mp4`, etc., dentro da mesma pasta.
-
-### Opções Comuns (para ambos os scripts)
-
-Você pode customizar a voz e a velocidade em qualquer um dos scripts.
-
--   **Mudar a voz para masculina (`pm_juca`):**
-    Adicione `--voz pm_juca` ao final do comando.
-    ```bash
-    python3 processar_lote.py "minha_pasta_de_videos" --voz pm_juca
-    ```
--   **Ajustar a aceleração máxima:**
-    Use `--max_aceleracao`. Um valor maior permite que a voz fique mais rápida.
-    ```bash
-    python3 gerador_de_dublagem.py "legenda.vtt" "video_final.mp4" --video_entrada "video_original.mp4" --max_aceleracao 2.0
-    ```
-
----
-
-## Etapa Manual Alternativa: Usando FFmpeg
-
-Se você preferir gerar apenas os arquivos de áudio e combiná-los com o vídeo manualmente, pode usar estes comandos do FFmpeg.
-
-**Para adicionar o áudio como uma SEGUNDA faixa (mantendo a original):**
-```bash
-ffmpeg -i "video_original.mp4" -i "audio_dublado.mp3" -map 0:v:0 -map 0:a:0 -map 1:a:0 -c:v copy -c:a copy "video_final_com_dublagem.mp4"
+# Exemplo: processa todos os pares de vídeo/legenda na pasta "meus_videos"
+python3 processar_lote.py "meus_videos/"
 ```
 
-**Para SUBSTITUIR o áudio original pelo novo:**
+### Opções de Customização (para ambos os scripts)
+
+Adicione estas flags ao final de qualquer comando para alterar o resultado:
+
+-   `--lang [CODIGO]`: Altera o idioma do TTS. Ex: `a` (Inglês), `e` (Espanhol), `p` (Português).
+-   `--voz [NOME_VOZ]`: Altera a voz usada. Consulte o [Voices.md do Kokoro](https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md) para a lista completa.
+-   `--max_aceleracao [NUMERO]`: Altera o fator máximo de aceleração (ex: `1.8`).
+
+**Exemplo com customização (voz masculina em inglês):**
 ```bash
-ffmpeg -i "video_original.mp4" -i "audio_dublado.mp3" -map 0:v:0 -map 1:a:0 -c:v copy -c:a copy "video_final_dublado.mp4"
+python3 processar_lote.py "videos_em_ingles/" --lang a --voz am_george
 ```
